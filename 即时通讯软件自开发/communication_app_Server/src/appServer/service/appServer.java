@@ -25,9 +25,9 @@ public class appServer {
         validUsers.put("100",new User("123456","100"));
         validUsers.put("200",new User("123456","200"));
         validUsers.put("300",new User("123456","300"));
-        validUsers.put("至尊宝",new User("123456","至尊宝"));
-        validUsers.put("紫霞仙子",new User("123456","紫霞仙子"));
-        validUsers.put("菩提老祖",new User("123456","菩提老祖"));
+        validUsers.put("陆正达",new User("123456","陆正达"));
+        validUsers.put("小狗",new User("123456","小狗"));
+        validUsers.put("杨羊羊",new User("123456","杨羊羊"));
 
     }
 
