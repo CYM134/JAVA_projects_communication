@@ -4,15 +4,18 @@ import app_common.Message;
 import app_common.MessageType;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * 该类目的是让线程可以持有Socket，以保持服务端与客户端的长时间联通
@@ -20,7 +23,8 @@ import java.util.Arrays;
 public class ClientConnectServerThread extends Thread {
     private Socket socket;
     private ListView<String> onlineUserListView; // 用于显示在线用户的 ListView
-    public boolean running =true;
+    //用于消息聊天的clientMessageService对象
+    private ClientMessageService clientMessageService =new ClientMessageService();
     //构建构造函数，让其可以接受一个Socket对象
     public ClientConnectServerThread(Socket socket){
         this.socket=socket;
@@ -30,7 +34,7 @@ public class ClientConnectServerThread extends Thread {
     @Override
     public void run(){
         //保持Thread在后台和服务器长时间稳定通信，因此可以使用循环保持通信
-        while(running){
+        while(true){
             try {
                 //设置若服务器没有发送message对象，线程会阻塞在这里
                 System.out.println("客户端线程运行中，等待读取从服务端发送而来的信息");
@@ -54,7 +58,21 @@ public class ClientConnectServerThread extends Thread {
                         onlineUserListView.getItems().setAll(Arrays.asList(onlineUsers));
                     });
 
-                }else {
+                }else if(message.getMesType().equals(MessageType.MESSAGE_USER_ONLINE_FAIL)){
+                    // 将弹窗操作放到 Platform.runLater 中
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR,
+                                "用户: " + message.getGetter(), ButtonType.OK);
+                        alert.setHeaderText("你输入的用户目前不在线！");
+                        alert.showAndWait();
+                    });
+                } else if (message.getMesType().equals(MessageType.MESSAGE_USER_ONLINE_SUCCESS)) {
+                    //用户上线，打开聊天窗口
+                    clientMessageService.openChatWindow(message);
+                } else if (message.getMesType().equals(MessageType.MESSAGE_COMM_MES_SNED)) {
+                    //收到消息，显示在聊天窗口
+                    clientMessageService.showPrivateChat(message);
+                } else {
                     System.out.println("是其它类型的message，暂时不处理");
                 }
             }catch (Exception e){
@@ -88,5 +106,6 @@ public class ClientConnectServerThread extends Thread {
 
         });
     }
+
 
 }

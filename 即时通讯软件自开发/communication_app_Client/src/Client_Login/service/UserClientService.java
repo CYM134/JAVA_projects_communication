@@ -4,9 +4,7 @@ import app_common.Message;
 import app_common.MessageType;
 import app_common.User;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -14,15 +12,16 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * 该类完成用户登录验证和用户注册等功能
  */
 public class UserClientService {
+
+
+    private ClientMessageService clientMessageService =new ClientMessageService();
     //在其它地方可能也需要用到这个user信息，故而在外面创建
     private User u =new User();
     //socket在多线程阶段需要被获取到，故而在外面创建
@@ -37,7 +36,7 @@ public class UserClientService {
         //连接到服务端，发送user对象
         //服务端目前在本机，故而使用本机的IP地址，在9999端口监听
         try {
-            socket= new Socket(InetAddress.getByName("10.253.66.116"),9999);
+            socket= new Socket(InetAddress.getByName("10.252.169.43"),9999);
             //发送User对象,发送对象类使用objectOutputStream流
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(u);
@@ -113,6 +112,7 @@ public class UserClientService {
         userIdField.setPromptText("请输入要私聊用户ID(在线):");
         // 确定按钮
         Button confirmButton = new Button("确定");
+        setButtonStyle(confirmButton);
         // 登录界面的布局
         VBox loginLayout = new VBox(10);
         loginLayout.setStyle("-fx-padding: 20; -fx-alignment: center;");
@@ -122,6 +122,7 @@ public class UserClientService {
         //验证通过则跳入聊天界面，失败则提示
         confirmButton.setOnAction(event ->{
             String userId = userIdField.getText().trim();
+           clientMessageService.judgeSenderAndGetter(u.getUserId(),userId);
         } );
 
 
@@ -129,6 +130,12 @@ public class UserClientService {
         stage.setScene(getIdScene);
         stage.show();
 
+    }
+
+
+    //设置按钮样式
+    private void setButtonStyle(Button button) {
+        button.setStyle("-fx-background-color: #008CBA; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px 20px; -fx-border-radius: 5px; -fx-background-radius: 5px;");
     }
 
 

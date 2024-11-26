@@ -1,13 +1,13 @@
 package appServer.service;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 该类用于管理和客户端通信的线程
  */
 public class ManageClientThreads {
-    private static HashMap<String,ServerConnectClientThread> hm =new HashMap<>();
+    private static ConcurrentHashMap<String,ServerConnectClientThread> hm =new ConcurrentHashMap<>();
 
     //添加线程对象到hm集合
     public static void addClientThread(String userID,ServerConnectClientThread serverConnectClientThread){

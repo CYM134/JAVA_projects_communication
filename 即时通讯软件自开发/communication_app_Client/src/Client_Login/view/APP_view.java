@@ -195,7 +195,7 @@ public class APP_view extends Application {
         });
 
         menuLayout.getChildren().addAll(label,showOnlineUserButton,privateChatButton,MassMessageButton,sendFilesButton,logoutButton);
-        Scene scene = new Scene(menuLayout, 800, 600);
+        Scene scene = new Scene(menuLayout, 600, 400);
         primaryStage.setScene(scene);
     }
 
