@@ -16,6 +16,12 @@ public class Message implements Serializable {
     private String sendTime;//确定消息的发送时间是什么时候
     private String mesType;//确定发送的消息类型
 
+    //和发送文件相关的东西
+    private byte[] fileBytes; //文件内容以字节方式进行传输
+    private int fileLen = 0;//获取文件的长度
+    private String dest; //将文件传输到哪里
+    private String src; //源文件的路径
+
     public String getSender() {
         return sender;
     }
@@ -54,5 +60,37 @@ public class Message implements Serializable {
 
     public void setMesType(String mesType) {
         this.mesType = mesType;
+    }
+
+    public int getFileLen() {
+        return fileLen;
+    }
+
+    public void setFileLen(int fileLen) {
+        this.fileLen = fileLen;
+    }
+
+    public byte[] getFileBytes() {
+        return fileBytes;
+    }
+
+    public void setFileBytes(byte[] fileBytes) {
+        this.fileBytes = fileBytes;
+    }
+
+    public String getDest() {
+        return dest;
+    }
+
+    public void setDest(String dest) {
+        this.dest = dest;
+    }
+
+    public String getSrc() {
+        return src;
+    }
+
+    public void setSrc(String src) {
+        this.src = src;
     }
 }

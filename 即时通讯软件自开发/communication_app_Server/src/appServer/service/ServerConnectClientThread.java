@@ -10,6 +10,7 @@ import java.net.Socket;
 
 /**
  * 该类对应的对象和某个客户端保持通信
+ * 接收客户端传过来的消息，以实现不同客户端的功能需求的正确实现
  */
 public class ServerConnectClientThread extends Thread{
     private Socket socket;
@@ -80,7 +81,13 @@ public class ServerConnectClientThread extends Thread{
                     //得到对应线程的对象输出流,就是另一个线程
                     ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
                     oos.writeObject(message);
-                }else{
+                } else if (message.getMesType().equals(MessageType.MESSAGE_FILE_MES)) {
+                    //根据getterId获取到对应的线程，然后将message对象转发
+                    ObjectOutputStream oos =
+                            new ObjectOutputStream(ManageClientThreads.getServerConnectClientThread(message.getGetter()).getSocket().getOutputStream());
+                    oos.writeObject(message);
+
+                } else{
                     System.out.println("其它类型的message,暂时不处理");
                 }
             } catch (Exception e) {

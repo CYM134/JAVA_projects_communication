@@ -15,7 +15,9 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 
-
+/**
+ * 该类的功能是，UI界面的搭建部分
+ */
 
 public class APP_view extends Application {
 
@@ -27,7 +29,7 @@ public class APP_view extends Application {
     }
 
 
-    @Override
+    @Override  //覆写父类start方法
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("JAVA通信-Q我");
         primaryStage.getIcons().add(new Image("file:image/deer.png"));

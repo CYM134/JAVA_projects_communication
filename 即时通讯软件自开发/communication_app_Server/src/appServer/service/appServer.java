@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 服务端类，在监听9999端口，等待客户端的连接，并保持通信
+ * 服务端类，在监听9999端口，等待客户端的连接，并保持通信，确保登录功能的正确实现
  */
 public class appServer {
     private ServerSocket ss=null;

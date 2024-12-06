@@ -6,25 +6,25 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 
 /**
  * 该类目的是让线程可以持有Socket，以保持服务端与客户端的长时间联通
+ * 说白了就是，用于接收服务端传回的消息以实现不同按钮的功能
  */
 public class ClientConnectServerThread extends Thread {
     private Socket socket;
     private ListView<String> onlineUserListView; // 用于显示在线用户的 ListView
     //用于消息聊天的clientMessageService对象
     private ClientMessageService clientMessageService =new ClientMessageService();
+    //用于文件保存的FileClientService对象
+    private FileClientService fileClientService =new FileClientService();
     //构建构造函数，让其可以接受一个Socket对象
     public ClientConnectServerThread(Socket socket){
         this.socket=socket;
@@ -69,9 +69,11 @@ public class ClientConnectServerThread extends Thread {
                 } else if (message.getMesType().equals(MessageType.MESSAGE_USER_ONLINE_SUCCESS)) {
                     //用户上线，打开聊天窗口
                     clientMessageService.openChatWindow(message);
-                } else if (message.getMesType().equals(MessageType.MESSAGE_COMM_MES_SNED)) {
+                } else if (message.getMesType().equals(MessageType.MESSAGE_COMM_MES_SEND)) {
                     //收到消息，显示在聊天窗口
                     clientMessageService.showPrivateChat(message);
+                } else if (message.getMesType().equals(MessageType.MESSAGE_FILE_MES)) {
+                    fileClientService.saveFileOnGetter(message);
                 } else {
                     System.out.println("是其它类型的message，暂时不处理");
                 }

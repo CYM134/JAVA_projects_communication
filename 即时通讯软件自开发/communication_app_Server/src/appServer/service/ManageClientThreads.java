@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 该类用于管理和客户端通信的线程
+ * 该类用于管理和客户端通信的线程，存储客户端的在线线程
  */
 public class ManageClientThreads {
     private static ConcurrentHashMap<String,ServerConnectClientThread> hm =new ConcurrentHashMap<>();

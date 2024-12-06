@@ -14,6 +14,7 @@ public interface MessageType {
     String MESSAGE_GET_ONLINE_FRIEND ="4";//要求返回在线用户列表
     String MESSAGE_RET_ONLINE_FRIEND = "5";//返回在线用户列表
     String MESSAGE_CLIENT_EXIT="6";//客户端请求退出
+    String MESSAGE_FILE_MES="7"; //发送文件类型
     String MESSAGE_USER_ONLINE_FAIL="333";  //用户在线
     String MESSAGE_USER_ONLINE_SUCCESS="444";//用户不在线
 }
