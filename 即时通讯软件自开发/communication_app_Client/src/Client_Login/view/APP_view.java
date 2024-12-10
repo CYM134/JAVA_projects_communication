@@ -1,5 +1,6 @@
 package Client_Login.view;
 
+import Client_Login.service.ChatRoomService;
 import Client_Login.service.UserClientService;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -23,6 +24,7 @@ public class APP_view extends Application {
 
 
     private UserClientService userClientService =new UserClientService(); //用于登录服务器或者注册用户
+    private ChatRoomService chatRoomService=new ChatRoomService();  //用于实现群聊功能
 
     public static void main(String[] args) {
         launch(args);
@@ -157,14 +159,12 @@ public class APP_view extends Application {
         label.setStyle("-fx-font-size: 22px; -fx-text-fill: white;");
 
         Button showOnlineUserButton = new Button("显示在线用户列表");
-        Button MassMessageButton = new Button("群发消息");
+        Button MassMessageButton = new Button("进入聊天室");
         Button privateChatButton = new Button("私聊消息");
-        Button sendFilesButton = new Button("发送文件");
         Button logoutButton = new Button("退出");
         setButtonStyle(showOnlineUserButton);
         setButtonStyle(MassMessageButton);
         setButtonStyle(privateChatButton);
-        setButtonStyle(sendFilesButton);
         setButtonStyle(logoutButton);
 
         //点击按钮进入显示用户列表功能
@@ -177,11 +177,7 @@ public class APP_view extends Application {
         });
         //点击按钮进入群发消息功能
         MassMessageButton.setOnAction(event->{
-
-        });
-        //点击按钮进入发送文件功能
-        sendFilesButton.setOnAction(event->{
-
+            chatRoomService.getChatRoomWindow(userID);
         });
         //点击按钮进入退出功能，无异常退出系统
         logoutButton.setOnAction(event -> {
@@ -196,7 +192,7 @@ public class APP_view extends Application {
             primaryStage.close();
         });
 
-        menuLayout.getChildren().addAll(label,showOnlineUserButton,privateChatButton,MassMessageButton,sendFilesButton,logoutButton);
+        menuLayout.getChildren().addAll(label,showOnlineUserButton,privateChatButton,MassMessageButton,logoutButton);
         Scene scene = new Scene(menuLayout, 600, 400);
         primaryStage.setScene(scene);
     }

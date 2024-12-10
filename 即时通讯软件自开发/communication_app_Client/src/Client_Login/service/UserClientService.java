@@ -36,7 +36,7 @@ public class UserClientService {
         //连接到服务端，发送user对象
         //服务端目前在本机，故而使用本机的IP地址，在9999端口监听
         try {
-            socket= new Socket(InetAddress.getByName("10.252.160.22"),9999);
+            socket= new Socket(InetAddress.getByName("10.253.61.22"),9999);
             //发送User对象,发送对象类使用objectOutputStream流
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(u);

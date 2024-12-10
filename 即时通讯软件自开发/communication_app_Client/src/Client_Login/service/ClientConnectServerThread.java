@@ -25,6 +25,8 @@ public class ClientConnectServerThread extends Thread {
     private ClientMessageService clientMessageService =new ClientMessageService();
     //用于文件保存的FileClientService对象
     private FileClientService fileClientService =new FileClientService();
+    //用于聊天室的chatRoomService对象
+    private ChatRoomService chatRoomService=new ChatRoomService();
     //构建构造函数，让其可以接受一个Socket对象
     public ClientConnectServerThread(Socket socket){
         this.socket=socket;
@@ -74,6 +76,28 @@ public class ClientConnectServerThread extends Thread {
                     clientMessageService.showPrivateChat(message);
                 } else if (message.getMesType().equals(MessageType.MESSAGE_FILE_MES)) {
                     fileClientService.saveFileOnGetter(message);
+                }else if(message.getMesType().equals(MessageType.CREATE_CHATROOM_ID)){
+                    chatRoomService.openChatRoomWindow(message);
+                } else if(message.getMesType().equals(MessageType.CREATE_CHATROOM_FAIL)){
+                    //说明ID已经被使用了，报错提示 将弹窗操作放到 Platform.runLater 中
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR,
+                                "创建的聊天室ID: " + message.getRoomId(), ButtonType.OK);
+                        alert.setHeaderText("你用于创建的聊天室ID已被使用，请重新输入！");
+                        alert.showAndWait();
+                    });
+                } else if (message.getMesType().equals(MessageType.JOIN_CHATROOM_ID)) {
+                    chatRoomService.openChatRoomWindow(message);
+                } else if (message.getMesType().equals(MessageType.JOIN_CHATROOM_FAIL)) {
+                    //说明聊天室ID没有创建不能加入，报错提示 将弹窗操作放到 Platform.runLater 中
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR,
+                                "加入的聊天室ID: " + message.getRoomId(), ButtonType.OK);
+                        alert.setHeaderText("你想要的聊天室没有被创建，不能加入！");
+                        alert.showAndWait();
+                    });
+                } else if (message.getMesType().equals(MessageType.MESSAGE_ROOM_MES)) {
+                    chatRoomService.showMessageOnChatRoomWindow(message);
                 } else {
                     System.out.println("是其它类型的message，暂时不处理");
                 }

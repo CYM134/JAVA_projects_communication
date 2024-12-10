@@ -72,8 +72,8 @@ public class ClientMessageService {
         System.out.println(sendId + " 正在给 " + getterId + " 发送消息");
 
         try {// 通过用户的连接线程发送消息
-                System.out.println(sendId);
-                System.out.println(getterId);
+//                System.out.println(sendId);
+//                System.out.println(getterId);
             ObjectOutputStream oos = new ObjectOutputStream(
                     ManageClientConnectServerThread.getClientConnectServerThread(sendId).getSocket().getOutputStream()
             );

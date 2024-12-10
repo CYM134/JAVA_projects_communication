@@ -17,4 +17,9 @@ public interface MessageType {
     String MESSAGE_FILE_MES="7"; //发送文件类型
     String MESSAGE_USER_ONLINE_FAIL="333";  //用户在线
     String MESSAGE_USER_ONLINE_SUCCESS="444";//用户不在线
+    String CREATE_CHATROOM_ID="8"; //创建聊天室信号
+    String CREATE_CHATROOM_FAIL="888"; //创建的聊天室ID已经存在了
+    String JOIN_CHATROOM_ID ="9"; //加入聊天室信号
+    String JOIN_CHATROOM_FAIL ="999"; //加入聊天室的ID不存在
+    String MESSAGE_ROOM_MES="10"; //群发消息
 }

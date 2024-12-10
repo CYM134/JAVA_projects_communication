@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 该类对应的对象和某个客户端保持通信
@@ -15,6 +16,9 @@ import java.net.Socket;
 public class ServerConnectClientThread extends Thread{
     private Socket socket;
     private String userId;//连接到服务端的用户ID
+    //创建用于存储聊天室的集合
+    private static ConcurrentHashMap<String,String[]> ChatRoom
+            =new ConcurrentHashMap<>();
 
     public ServerConnectClientThread(Socket socket, String userId) {
         this.socket = socket;
@@ -87,6 +91,61 @@ public class ServerConnectClientThread extends Thread{
                             new ObjectOutputStream(ManageClientThreads.getServerConnectClientThread(message.getGetter()).getSocket().getOutputStream());
                     oos.writeObject(message);
 
+                } else if (message.getMesType().equals(MessageType.CREATE_CHATROOM_ID)) {
+                   String[] room = ChatRoom.get(message.getRoomId());
+                    if(room==null&&!message.getRoomId().isEmpty()){
+                        System.out.println("该聊天室ID没有被使用过！可以创建！");
+                        ChatRoom.put(message.getRoomId(),new String[100]);
+                        room = ChatRoom.get(message.getRoomId());
+                        room[0]=message.getSender();
+                    }else{
+                        message.setMesType(MessageType.CREATE_CHATROOM_FAIL);
+                    }
+                    //根据message获取getterId,然后得到对应线程
+                    ServerConnectClientThread serverConnectClientThread
+                            = ManageClientThreads.getServerConnectClientThread(message.getSender());
+                    //得到对应线程的对象输出流,就是另一个线程
+                    ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
+                    oos.writeObject(message);
+                }else if(message.getMesType().equals(MessageType.JOIN_CHATROOM_ID)){
+                    String[] room = ChatRoom.get(message.getRoomId());  //获取集合中的ID
+                    if(room==null){
+                        System.out.println("没有找到想加入的聊天室ID "+message.getRoomId()+",返回错误提示！");
+                        message.setMesType(MessageType.JOIN_CHATROOM_FAIL);
+                    }else{
+                        System.out.println("想加入的聊天室在集合里！可以加入！");
+                        for (int i=0;i<room.length;i++){
+                            if(room[i]==null){  //找到一个空位
+                                room[i]=message.getSender();
+                                break;
+                            } else if(room[i].equals(message.getSender())){
+                                System.out.println("用户已经在聊天室里了！");
+                                break;
+                            }
+                        }
+                    }
+                    //根据message获取getterId,然后得到对应线程
+                    ServerConnectClientThread serverConnectClientThread
+                            = ManageClientThreads.getServerConnectClientThread(message.getSender());
+                    //得到对应线程的对象输出流,就是另一个线程
+                    ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
+                    oos.writeObject(message);
+                } else if (message.getMesType().equals(MessageType.MESSAGE_ROOM_MES)) {
+                    String[] room = ChatRoom.get(message.getRoomId());  //获取集合中的ID
+                    for(String user:room){
+                        if(user!=null&&!user.equals(message.getSender())){
+                            String senderId =message.getSender();
+                            System.out.println("发消息的是："+message.getSender()+"  给聊天室用户："+user+"发消息");  //检验用户
+                            //根据循环获取每个用户的ID,然后得到对应线程
+                            ServerConnectClientThread serverConnectClientThread
+                                    = ManageClientThreads.getServerConnectClientThread(user);
+                            //得到对应线程的对象输出流,就是另一个线程
+                            ObjectOutputStream oos = new ObjectOutputStream(serverConnectClientThread.getSocket().getOutputStream());
+                            message.setSender(user);
+                            oos.writeObject(message);
+                            message.setSender(senderId);
+                        }
+                    }
                 } else{
                     System.out.println("其它类型的message,暂时不处理");
                 }
